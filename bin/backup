@@ -1,0 +1,13 @@
+#!/bin/bash
+
+tempdir=$(mktemp --dir)
+cd $tempdir
+
+mysqldump --all-databases --single-transaction > databases.sql
+
+(cd /etc/nginx ; find conf.d -type f | cpio -padl $tempdir )
+(cd /var/www   ; find sites  -type f | cpio -padl $tempdir )
+
+tar -c .
+
+rm -Rf $tempdir

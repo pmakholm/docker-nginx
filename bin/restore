@@ -1,0 +1,12 @@
+#!/bin/bash
+
+tempdir=$(mktemp --dir)
+cd $tempdir
+
+tar -x
+
+[ -e databases.sql ] && mysql < databases.sql                      && echo 'FLUSH PRIVILEGES;' | mysql
+[ -d sites ]  && rm -Rf /var/www/sites    && mv sites /var/www/
+[ -d conf.d ] && rm -Rf /etc/nginx/conf.d && mv conf.d /etc/nginx/ && /etc/init.d/nginx reload
+
+rm -Rf $tempdir
